@@ -115,6 +115,34 @@ class DB {
     }
 
     /**
+     * Выполняет запрос создания записи.
+     *
+     * @param $table
+     * @param $id
+     * @param array $params
+     */
+    public function create($table, $params = array())
+    {
+        if (count($params) > 0) {
+            $sql = "INSERT INTO `{$table}` ";
+            $data = array();
+            foreach ($params as $key => $value) {
+				$value = addslashes($value);
+				$cols[] = "`{$key}`";
+				$values[] = "'{$value}'";
+            }
+            $sql.= '(' . implode(', ', $cols) . ')';
+            $sql.= ' VALUES (' . implode(', ', $values) . ');';
+
+            $query = mysql_query($sql) or die(mysql_error());
+			
+			return mysql_insert_id();
+        }
+		
+		return false;
+    }
+    
+    /**
      * Выполняет запрос выборки.
      *
      * @param $sql
